@@ -9,7 +9,7 @@ var apiversion='/api/v1';
 var db = require('./config/db.config');
 
 
-var port = process.env.PORT || 3001;
+var port = process.env.PORT || 3000;
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -29,25 +29,6 @@ app.get(apiversion + '/books',  function (req, res)  {
   
 });
 
-//Get book by id
-app.get(apiversion + '/book/:bookid',  function (req, res)  {  
-
-
-  res.setHeader('Content-Type', 'application/json');
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  var bookid = Number(req.params.bookid);
-  
-  db.query('SELECT * FROM books where bookid=?', bookid.toString(),function (error, results, fields) {
-      if (error) throw error;
-      return res.send({ error: false, message: 'book id =' + bookid.toString(), data: results });
-  });
-
-
-});
-
-//Student by id
 //Get student by id
 app.get(apiversion + '/student/:studentId',  function (req, res)  {  
 
@@ -65,22 +46,23 @@ app.get(apiversion + '/student/:studentId',  function (req, res)  {
 
 
 });
+
+
+
 //Delete book by id
 app.delete(apiversion + '/book/:bookid',  function (req, res)  {  
 
-  //Code for Delete
-  var bookid= req.params.bookid;
+  var bookid=req.params.bookid;
+  
+    res.setHeader('Content-Type', 'application/json');
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
 
-  res.setHeader('Content-Type', 'application/json');
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  db.query(`DELETE from books WHERE bookid =${bookid};`,function (error, results, fields) {
-    if (error) throw error;
-    return res.send({ error: false, message: ' Modified book' });
+    db.query(`DELETE from books WHERE bookid =${bookid};`,function (error, results, fields) {
+      if (error) throw error;
+      return res.send({ error: false, message: ' Modified book' });
   });
-
-
 
 });
 
@@ -116,12 +98,13 @@ app.post(apiversion + '/book',  function (req, res)  {
   });
 
 
-});
+//addput
 
+  
 
+  });
 
-//Edit book by id
-app.put(apiversion + '/book/:bookid',  function (req, res) {
+  app.put(apiversion + '/book/:bookid',  function (req, res) {
 
   var title = req.body.title; 	
   var price=req.body.price;
@@ -132,26 +115,13 @@ app.put(apiversion + '/book/:bookid',  function (req, res) {
   var shortDescription=req.body.shortDescription;
   var author=req.body.author;
   var category=req.body.category;
+
   var bookid=req.params.bookid;
   
     res.setHeader('Content-Type', 'application/json');
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
-console.log(`UPDATE books 
-  SET 
-    title ='${title}', 
-    isbn = '${isbn}', 
-    pageCount = ${pageCount}, 
-    publishedDate = '${publishedDate}', 
-    thumbnailUrl = '${thumbnailUrl}', 
-    shortDescription = '${shortDescription}', 
-    author = '${author}', 
-    category = '${category}',
-    price = ${price}
-  WHERE bookid =${bookid};`)
-
-
 
     db.query(`UPDATE books 
             SET 
@@ -169,42 +139,20 @@ console.log(`UPDATE books
       return res.send({ error: false, message: ' Modified book' });
   });
 
+      
+    });
+
+  
+  
+
+
+  
+
+
+//Edit book by id
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+app.listen(port, function () {
+    console.log("Server is up and running...");
 });
-
-app.post(apiversion + '/student',  function (req, res) {
-
-  var studentId = req.body.studentId
-  var studentName = req.body.studentName
-
-  res.setHeader('Content-Type', 'application/json');
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-  db.query(`INSERT INTO student 
-  (studentId,studentName) VALUES ( '${studentId}','${studentName}');`,function (error, results, fields) {
-    if (error) throw error;
-    return res.send({ error: false, message: 'Insert new student' });
-
-  });
-
-
-
-});
-    
-
