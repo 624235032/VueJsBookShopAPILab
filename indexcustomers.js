@@ -246,3 +246,75 @@ app.put(apiversion + '/student/:studentId',  function (req, res)  {
 app.listen(port, function () {
     console.log("Server is up and running...");
 });
+
+
+
+
+
+app.get(apiversion + '/customers',  function (req, res)  {  
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
+  db.query('SELECT * FROM customers', function (error, results, fields) {
+      if (error) throw error;
+      return res.send({ error: false, message: 'customers list', data: results });
+  });
+
+  
+});
+
+
+
+
+app.put(apiversion + '/customers/:customerId',  function (req, res)  {  
+
+  var customerId = req.body.customerId;
+  var customerName = req.body.customerName;
+  var customerAddress = req.body.customerAddress;
+  var customerAge = req.body.customerAge;
+  var customerPicture = req.body.customerPicture;
+  
+
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
+  db.query(`UPDATE customers
+            Set
+               customerId = ${customerId},
+               customerName = '${customerName}',
+               customerAddress = '${customerAddress}',
+               customerAge = '${customerAge}',
+               customerPicture = '${customerPicture}'
+  
+            where customerId='${customerId}';`,function (error, _results, _fields) {
+    if (error) throw error;
+    return res.send({ error: false, message: ' customer' });
+   });
+
+});
+
+
+app.delete(apiversion + '/customers/:customerId',  function (req, res)  {  
+
+  var customerId = req.params.customerId;
+
+  res.setHeader('Content-Type', 'application/json');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
+  db.query(`DELETE from customers WHERE customerId =${customerId};`,function (error, _results, _fields) {
+      if (error) throw error;
+      return res.send({ error: false, message: ' Dalete' });
+  });
+
+
+
+});
+
+
